@@ -1,11 +1,16 @@
-controllers.controller('TaskCtrl', function($scope, TaskService, $ionicPopup){
+controllers.controller('TaskCtrl', function($scope, TaskService, $ionicPopup, $ionicListDelegate){
 
   $scope.lista = TaskService.recuperarTarefas();
 
-  $scope.showPopup = function() {
-    $scope.task = {
-      pronto: false
-    };
+  $scope.showPopup = function(item) {
+    var isUpdate = angular.isDefined(item);
+    if(isUpdate){
+      $scope.task = item;
+    }else{
+      $scope.task = {
+        pronto: false
+      };
+    }
 
     // An elaborate, custom popup
     var myPopup = $ionicPopup.show({
@@ -23,7 +28,10 @@ controllers.controller('TaskCtrl', function($scope, TaskService, $ionicPopup){
               alert('Nome obrigatorio.');
               e.preventDefault();
             } else {
-              $scope.lista.push($scope.task);
+              if(!isUpdate){
+                $scope.lista.push($scope.task);
+              }
+              $ionicListDelegate.closeOptionButtons();
             }
           }
         }
